@@ -170,7 +170,7 @@ class Net(pytorch_lightning.LightningModule):
                     spatial_size=(64, 64, 64),
                     pos=1,
                     neg=1,
-                    num_samples=10,
+                    num_samples=6,
                     image_key="image",
                     image_threshold=0,
                 ),
