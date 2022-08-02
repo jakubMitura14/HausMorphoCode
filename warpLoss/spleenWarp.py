@@ -39,7 +39,7 @@ import os
 import glob
 import warp as wp
 import statistics
-
+import numba
 
 wp.init()
 devicesWarp = wp.get_devices()
@@ -241,6 +241,9 @@ class Net(pytorch_lightning.LightningModule):
         #print(loss.item())
         #loss = self.loss_function(output, labels)
         tensorboard_logs = {"train_loss": loss.item()}
+        torch.cuda.empty_cache()
+        numba.cuda.current_context().reset() 
+
         return {"loss": loss, "log": tensorboard_logs}
 
     def validation_step(self, batch, batch_idx):
