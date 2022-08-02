@@ -243,11 +243,17 @@ class Net(pytorch_lightning.LightningModule):
             labels=decollate_batch(labels)
             # zipped = (output,labels )
             # print(output)
-            # listt=[]
+            listt=[]
             # for out,lab in zipped:
             #     listt.append(mainPartWarpLossSingleBatch(out,lab))
             # loss =torch.nanmean(torch.stack(listt))
-            loss =mainPartWarpLossSingleBatch(output[0],labels[0])
+            for i in range(0,6):
+                listt.append(mainPartWarpLossSingleBatch(output[i],labels[i]))
+
+
+            # lossA =mainPartWarpLossSingleBatch(output[0],labels[0])
+            # lossB =mainPartWarpLossSingleBatch(output[1],labels[1])
+            loss = torch.nanmean(torch.stack(listt))
             #print(loss.item())
             #loss = self.loss_function(output, labels)
             tensorboard_logs = {"train_loss": loss.item()}
@@ -261,7 +267,7 @@ class Net(pytorch_lightning.LightningModule):
     def validation_step(self, batch, batch_idx):
         images, labels = batch["image"], batch["label"]
         roi_size = (64, 64, 64)
-        sw_batch_size = 8
+        sw_batch_size = 6
         outputs = sliding_window_inference(
             images, roi_size, sw_batch_size, self.forward)
         #print("in validation")
