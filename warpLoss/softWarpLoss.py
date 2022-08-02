@@ -80,7 +80,7 @@ class getHausdorff_soft(torch.autograd.Function):
                                                                             ctx.counts_arr,
                                                                             ctx.y_hat
                                                                             ,num_points_gold
-                                                                            ,(dim_x+dim_y+dim_z)/40], device = device)#(dim_x+dim_y+dim_z)/10
+                                                                            ,1], device = device)#(dim_x+dim_y+dim_z)/10
 
 
         # return (wp.to_torch(ctx.counts_arr_fp),
