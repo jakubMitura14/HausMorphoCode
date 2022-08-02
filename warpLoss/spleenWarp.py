@@ -273,14 +273,14 @@ class Net(pytorch_lightning.LightningModule):
     def validation_epoch_end(self, outputs):
         val_loss, num_items = 0, 0
         for output in outputs:
-            val_loss += output["val_loss"].nansum().item()
+            #val_loss += output["val_loss"].nansum().item()
             num_items += output["val_number"]
         mean_val_dice = self.dice_metric.aggregate().item()
         self.dice_metric.reset()
-        mean_val_loss = torch.tensor(val_loss / num_items)
+        #mean_val_loss = torch.tensor(val_loss / num_items)
         tensorboard_logs = {
             "val_dice": mean_val_dice,
-            "val_loss": mean_val_loss,
+         #   "val_loss": mean_val_loss,
         }
         if mean_val_dice > self.best_val_dice:
             self.best_val_dice = mean_val_dice
