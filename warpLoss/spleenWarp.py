@@ -334,7 +334,6 @@ trainer = pytorch_lightning.Trainer(
     num_sanity_val_steps=1,
     log_every_n_steps=16,
     check_val_every_n_epoch=10,
-    enable_checkpointing=True,
     callbacks=[ModelCheckpoint(monitor = "dice",mode="max")]
 
 )
