@@ -242,7 +242,10 @@ class Net(pytorch_lightning.LightningModule):
             output=decollate_batch(output)
             labels=decollate_batch(labels)
             zipped = (output,labels )
-            loss =torch.nanmean(torch.stack(list(map(mainPartWarpLossSingleBatch, zipped ))))
+            listt=[]
+            for out,lab in zipped:
+                listt.append(mainPartWarpLossSingleBatch(out,lab))
+            loss =torch.nanmean(torch.stack(listt))
             #print(loss.item())
             #loss = self.loss_function(output, labels)
             tensorboard_logs = {"train_loss": loss.item()}

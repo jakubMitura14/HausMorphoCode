@@ -101,16 +101,16 @@ class getHausdorff_soft(torch.autograd.Function):
         ctx.tape.backward()
 
         # return adjoint w.r.t. inputs
-        # return (wp.to_torch(ctx.tape.gradients[ctx.points_in_grid]), 
-        #         wp.to_torch(ctx.tape.gradients[ctx.points_labelArr]),
-        #         wp.to_torch(ctx.tape.gradients[ctx.y_hat]),
-        #         wp.to_torch(ctx.tape.gradients[ctx.counts_arr])
-        #          ,None,None,None,None,None,None, None)
-        return (None, 
-                None,
+        return (wp.to_torch(ctx.tape.gradients[ctx.points_in_grid]), 
+                wp.to_torch(ctx.tape.gradients[ctx.points_labelArr]),
                 wp.to_torch(ctx.tape.gradients[ctx.y_hat]),
                 wp.to_torch(ctx.tape.gradients[ctx.counts_arr])
                  ,None,None,None,None,None,None, None)
+        # return (None, 
+        #         None,
+        #         wp.to_torch(ctx.tape.gradients[ctx.y_hat]),
+        #         wp.to_torch(ctx.tape.gradients[ctx.counts_arr])
+        #          ,None,None,None,None,None,None, None)
 
 
 
