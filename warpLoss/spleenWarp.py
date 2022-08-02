@@ -242,6 +242,7 @@ class Net(pytorch_lightning.LightningModule):
             output=decollate_batch(output)
             labels=decollate_batch(labels)
             zipped = (output,labels )
+            print(output)
             listt=[]
             for out,lab in zipped:
                 listt.append(mainPartWarpLossSingleBatch(out,lab))
