@@ -9,6 +9,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from gc import callbacks
 import pytorch_lightning
 from monai.utils import set_determinism
 from monai.transforms import (
@@ -41,7 +42,7 @@ import warp as wp
 import statistics
 import numba
 from numba import cuda as cudaa
-
+from pytorch_lightning.callbacks import ModelCheckpoint
 wp.init()
 devicesWarp = wp.get_devices()
 print_config()
@@ -100,7 +101,9 @@ def mainPartWarpLossSingleBatch(b,a):
     points_in_grid, points_labelArr,  y_hat, counts_arr ,radius,device,dim_x,dim_y,dim_z,num_points_gold, num_points_gold_false= softWarpLoss.prepare_tensors_for_warp_loss(a, b,radius, wp.get_devices()[1])
     softWarpLoss.getHausdorff_soft.apply(points_in_grid, points_labelArr,  y_hat, counts_arr ,radius,device,dim_x,dim_y,dim_z,num_points_gold, num_points_gold_false)
     res= torch.sub(torch.nanmean(counts_arr)
-                ,torch.div(torch.nansum(y_hat[a.bool()])  , (num_points_gold/((dim_x+dim_y+dim_z)/20) ) ))       
+                ,torch.nansum(y_hat[a.bool()]))       
+    # res= torch.sub(torch.nanmean(counts_arr)
+    #             ,torch.div(torch.nansum(y_hat[a.bool()])  , (num_points_gold/((dim_x+dim_y+dim_z)/20) ) ))       
     # argss= warpLoss.softWarpLoss.prepare_tensors_for_warp_loss(a, b,radius,devicesWarp[1])
     # warpLoss.softWarpLoss.getHausdorff_soft.apply(*argss)
     return res
@@ -151,7 +154,7 @@ class Net(pytorch_lightning.LightningModule):
                 Orientationd(keys=["image", "label"], axcodes="RAS"),
                 Spacingd(
                     keys=["image", "label"],
-                    pixdim=(1.5, 1.5, 2.0),
+                    pixdim=(1.5, 1.5, 1.5),
                     mode=("bilinear", "nearest"),
                 ),
                 ScaleIntensityRanged(
@@ -166,10 +169,10 @@ class Net(pytorch_lightning.LightningModule):
                 RandCropByPosNegLabeld(
                     keys=["image", "label"],
                     label_key="label",
-                    spatial_size=(64, 64, 64),
+                    spatial_size=(96, 96, 96),
                     pos=1,
                     neg=1,
-                    num_samples=6,
+                    num_samples=4,
                     image_key="image",
                     image_threshold=0,
                 ),
@@ -298,6 +301,7 @@ class Net(pytorch_lightning.LightningModule):
             "val_dice": mean_val_dice,
          #   "val_loss": mean_val_loss,
         }
+        self.log("dice",mean_val_dice )
         if mean_val_dice > self.best_val_dice:
             self.best_val_dice = mean_val_dice
             self.best_val_epoch = self.current_epoch
@@ -329,7 +333,10 @@ trainer = pytorch_lightning.Trainer(
     enable_checkpointing=True,
     num_sanity_val_steps=1,
     log_every_n_steps=16,
-    check_val_every_n_epoch=10
+    check_val_every_n_epoch=10,
+    enable_checkpointing=True,
+    callbacks=[ModelCheckpoint(monitor = "dice",mode="max")]
+
 )
 
 # train
