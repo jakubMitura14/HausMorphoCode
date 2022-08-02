@@ -103,7 +103,6 @@ def mainPartWarpLossSingleBatch(b,a):
                 ,torch.div(torch.nansum(y_hat[a.bool()])  , (num_points_gold/((dim_x+dim_y+dim_z)/20) ) ))       
     # argss= warpLoss.softWarpLoss.prepare_tensors_for_warp_loss(a, b,radius,devicesWarp[1])
     # warpLoss.softWarpLoss.getHausdorff_soft.apply(*argss)
-    print(f"waarp loss  {res}")
     return res
 
 
@@ -254,6 +253,8 @@ class Net(pytorch_lightning.LightningModule):
             # lossA =mainPartWarpLossSingleBatch(output[0],labels[0])
             # lossB =mainPartWarpLossSingleBatch(output[1],labels[1])
             loss = torch.nanmean(torch.stack(listt))
+            print(f"waarp loss  {loss}")
+
             #print(loss.item())
             #loss = self.loss_function(output, labels)
             tensorboard_logs = {"train_loss": loss.item()}

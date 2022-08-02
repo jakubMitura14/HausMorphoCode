@@ -65,10 +65,9 @@ class getHausdorff_soft(torch.autograd.Function):
 
         wp.synchronize()
 
-        print(device)
+        #print(device)
 
         grid = wp.HashGrid(dim_x, dim_y, dim_z, device)
-        idd=grid.id
         grid.build(ctx.points_in_grid, radius)
         wp.synchronize()
 
