@@ -170,10 +170,11 @@ class Net(pytorch_lightning.LightningModule):
                 RandCropByPosNegLabeld(
                     keys=["image", "label"],
                     label_key="label",
-                    spatial_size=(96, 96, 96),
+                    precision=16,
+                    spatial_size=(64, 64, 64),
                     pos=1,
                     neg=1,
-                    num_samples=4,
+                    num_samples=6,
                     image_key="image",
                     image_threshold=0,
                 ),
