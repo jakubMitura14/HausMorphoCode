@@ -256,7 +256,7 @@ class Net(pytorch_lightning.LightningModule):
         #print("in validation")
         # print(outputs.shape)
         # print(labels.shape)
-        loss = mainPartWarpLossSingleBatch(outputs,labels)
+        #loss = mainPartWarpLossSingleBatch(outputs,labels)
         #print(loss)
         # loss = meanWarpLoss(decollate_batch(outputs.bool()),decollate_batch(labels.bool()))
 
@@ -268,7 +268,7 @@ class Net(pytorch_lightning.LightningModule):
         self.dice_metric(y_pred=outputs, y=labels)
         torch.cuda.empty_cache()
         cudaa.current_context().reset() 
-        return {"val_loss": loss, "val_number": len(outputs)}
+        return {"val_number": len(outputs)}
 
     def validation_epoch_end(self, outputs):
         val_loss, num_items = 0, 0
