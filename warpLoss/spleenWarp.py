@@ -243,9 +243,9 @@ class Net(pytorch_lightning.LightningModule):
             #print(loss.item())
             #loss = self.loss_function(output, labels)
             tensorboard_logs = {"train_loss": loss.item()}
+            wp.build.clear_kernel_cache()
             torch.cuda.empty_cache()
             cudaa.current_context().reset() 
-
             return {"loss": loss, "log": tensorboard_logs}
         except:
             return {"loss": torch.zeros(1), "log": {}}      
@@ -292,8 +292,9 @@ class Net(pytorch_lightning.LightningModule):
             f"\nbest mean dice: {self.best_val_dice:.4f} "
             f"at epoch: {self.best_val_epoch}"
         )
+        wp.build.clear_kernel_cache()
         torch.cuda.empty_cache()
-        cudaa.current_context().reset()         
+        cudaa.current_context().reset()     
         return {"log": tensorboard_logs}
 
 # initialise the LightningModule
