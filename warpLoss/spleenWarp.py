@@ -170,7 +170,6 @@ class Net(pytorch_lightning.LightningModule):
                 RandCropByPosNegLabeld(
                     keys=["image", "label"],
                     label_key="label",
-                    precision=16,
                     spatial_size=(64, 64, 64),
                     pos=1,
                     neg=1,
@@ -331,6 +330,7 @@ tb_logger = pytorch_lightning.loggers.TensorBoardLogger(
 trainer = pytorch_lightning.Trainer(
     gpus=[0],
     max_epochs=600,#600
+    precision=16,
     logger=tb_logger,
     enable_checkpointing=True,
     num_sanity_val_steps=1,
