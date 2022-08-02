@@ -233,19 +233,22 @@ class Net(pytorch_lightning.LightningModule):
         return optimizer
 
     def training_step(self, batch, batch_idx):
-        images, labels = batch["image"], batch["label"]
-        output = self.forward(images)
-        #print("in training")
-        # print(output.shape)
-        # print(labels.shape)
-        loss = mainPartWarpLossSingleBatch(output,labels)
-        #print(loss.item())
-        #loss = self.loss_function(output, labels)
-        tensorboard_logs = {"train_loss": loss.item()}
-        torch.cuda.empty_cache()
-        cudaa.current_context().reset() 
+        try:
+            images, labels = batch["image"], batch["label"]
+            output = self.forward(images)
+            #print("in training")
+            # print(output.shape)
+            # print(labels.shape)
+            loss = mainPartWarpLossSingleBatch(output,labels)
+            #print(loss.item())
+            #loss = self.loss_function(output, labels)
+            tensorboard_logs = {"train_loss": loss.item()}
+            torch.cuda.empty_cache()
+            cudaa.current_context().reset() 
 
-        return {"loss": loss, "log": tensorboard_logs}
+            return {"loss": loss, "log": tensorboard_logs}
+        except:
+            return {"loss": torch.zeros(1), "log": {}}      
 
     def validation_step(self, batch, batch_idx):
         images, labels = batch["image"], batch["label"]
