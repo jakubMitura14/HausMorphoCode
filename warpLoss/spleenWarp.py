@@ -260,7 +260,7 @@ class Net(pytorch_lightning.LightningModule):
     def validation_step(self, batch, batch_idx):
         images, labels = batch["image"], batch["label"]
         roi_size = (64, 64, 64)
-        sw_batch_size = 1
+        sw_batch_size = 8
         outputs = sliding_window_inference(
             images, roi_size, sw_batch_size, self.forward)
         #print("in validation")
