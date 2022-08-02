@@ -43,6 +43,7 @@ import statistics
 import numba
 from numba import cuda as cudaa
 from pytorch_lightning.callbacks import ModelCheckpoint
+import monai
 wp.init()
 devicesWarp = wp.get_devices()
 print_config()
@@ -205,23 +206,23 @@ class Net(pytorch_lightning.LightningModule):
         )
 
         # we use cached datasets - these are 10x faster than regular datasets
-        self.train_ds = CacheDataset(
-            data=train_files, transform=train_transforms,
-            cache_rate=1.0, num_workers=4,
-        )
-        self.val_ds = CacheDataset(
-            data=val_files, transform=val_transforms,
-            cache_rate=1.0, num_workers=4,
-        )
-#         self.train_ds = monai.data.Dataset(
-#             data=train_files, transform=train_transforms)
-#         self.val_ds = monai.data.Dataset(
-#             data=val_files, transform=val_transforms)
+        # self.train_ds = CacheDataset(
+        #     data=train_files, transform=train_transforms,
+        #     cache_rate=1.0, num_workers=4,
+        # )
+        # self.val_ds = CacheDataset(
+        #     data=val_files, transform=val_transforms,
+        #     cache_rate=1.0, num_workers=4,
+        # )
+        self.train_ds = monai.data.Dataset(
+            data=train_files, transform=train_transforms)
+        self.val_ds = monai.data.Dataset(
+            data=val_files, transform=val_transforms)
 
     def train_dataloader(self):
         train_loader = DataLoader(
-            self.train_ds, batch_size=1, shuffle=True,
-            num_workers=4, collate_fn=list_data_collate,
+            self.train_ds, batch_size=1#, shuffle=True,
+            ,num_workers=4, collate_fn=list_data_collate,
         )
         return train_loader
 
