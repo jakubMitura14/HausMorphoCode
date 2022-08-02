@@ -170,7 +170,7 @@ class Net(pytorch_lightning.LightningModule):
                     spatial_size=(64, 64, 64),
                     pos=1,
                     neg=1,
-                    num_samples=1,
+                    num_samples=10,
                     image_key="image",
                     image_threshold=0,
                 ),
@@ -239,7 +239,10 @@ class Net(pytorch_lightning.LightningModule):
             #print("in training")
             # print(output.shape)
             # print(labels.shape)
-            loss = mainPartWarpLossSingleBatch(output,labels)
+            output=decollate_batch(output)
+            labels=decollate_batch(labels)
+            zipped = (output,labels )
+            loss =torch.nanmean(torch.stack(list(map(mainPartWarpLossSingleBatch, zipped ))))
             #print(loss.item())
             #loss = self.loss_function(output, labels)
             tensorboard_logs = {"train_loss": loss.item()}
@@ -252,7 +255,7 @@ class Net(pytorch_lightning.LightningModule):
 
     def validation_step(self, batch, batch_idx):
         images, labels = batch["image"], batch["label"]
-        roi_size = (160, 160, 160)
+        roi_size = (64, 64, 64)
         sw_batch_size = 1
         outputs = sliding_window_inference(
             images, roi_size, sw_batch_size, self.forward)
