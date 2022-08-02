@@ -90,8 +90,8 @@ root_dir='/home/data/spleenDat/Task09_Spleen'
 def mainPartWarpLossSingleBatch(b,a):
     radius = 500.0#TODO increase
     #b= b.float()
-    a=a[0,0,:,:,:].bool()
-    b=b[0,1,:,:,:]
+    a=a[0,:,:,:].bool()
+    b=b[1,:,:,:]
     #print(devicesWarp)
 
     # argss= prepare_tensors_for_warp_loss(a, b,radius,devicesWarp[1])
@@ -241,12 +241,13 @@ class Net(pytorch_lightning.LightningModule):
             # print(labels.shape)
             output=decollate_batch(output)
             labels=decollate_batch(labels)
-            zipped = (output,labels )
-            print(output)
-            listt=[]
-            for out,lab in zipped:
-                listt.append(mainPartWarpLossSingleBatch(out,lab))
-            loss =torch.nanmean(torch.stack(listt))
+            # zipped = (output,labels )
+            # print(output)
+            # listt=[]
+            # for out,lab in zipped:
+            #     listt.append(mainPartWarpLossSingleBatch(out,lab))
+            # loss =torch.nanmean(torch.stack(listt))
+            loss =mainPartWarpLossSingleBatch(output[0],labels[0])
             #print(loss.item())
             #loss = self.loss_function(output, labels)
             tensorboard_logs = {"train_loss": loss.item()}
