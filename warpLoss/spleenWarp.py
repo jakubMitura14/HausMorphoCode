@@ -269,8 +269,6 @@ class Net(pytorch_lightning.LightningModule):
         outputs = [self.post_pred(i) for i in decollate_batch(outputs)]
         labels = [self.post_label(i) for i in decollate_batch(labels)]
         self.dice_metric(y_pred=outputs, y=labels)
-        torch.cuda.empty_cache()
-        cudaa.current_context().reset() 
         return {"val_number": len(outputs)}
 
     def validation_epoch_end(self, outputs):
@@ -294,6 +292,8 @@ class Net(pytorch_lightning.LightningModule):
             f"\nbest mean dice: {self.best_val_dice:.4f} "
             f"at epoch: {self.best_val_epoch}"
         )
+        torch.cuda.empty_cache()
+        cudaa.current_context().reset()         
         return {"log": tensorboard_logs}
 
 # initialise the LightningModule
@@ -313,7 +313,7 @@ trainer = pytorch_lightning.Trainer(
     enable_checkpointing=True,
     num_sanity_val_steps=1,
     log_every_n_steps=16,
-    check_val_every_n_epoch=50
+    check_val_every_n_epoch=10
 )
 
 # train
