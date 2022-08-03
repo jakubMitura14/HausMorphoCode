@@ -331,6 +331,7 @@ tb_logger = pytorch_lightning.loggers.TensorBoardLogger(
 trainer = pytorch_lightning.Trainer(
     gpus=[0],
     max_epochs=600,#600
+    default_root_dir= "/home/data/lLogs",
     #precision=16,
     logger=tb_logger,
     enable_checkpointing=True,
