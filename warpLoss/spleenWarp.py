@@ -170,10 +170,10 @@ class Net(pytorch_lightning.LightningModule):
                 RandCropByPosNegLabeld(
                     keys=["image", "label"],
                     label_key="label",
-                    spatial_size=(64, 64, 64),
+                    spatial_size=(96, 96, 96),
                     pos=1,
                     neg=1,
-                    num_samples=6,
+                    num_samples=2,
                     image_key="image",
                     image_threshold=0,
                 ),
@@ -246,17 +246,18 @@ class Net(pytorch_lightning.LightningModule):
             labels=decollate_batch(labels)
             # zipped = (output,labels )
             # print(output)
-            listt=[]
-            # for out,lab in zipped:
-            #     listt.append(mainPartWarpLossSingleBatch(out,lab))
-            # loss =torch.nanmean(torch.stack(listt))
-            for i in range(0,6):
-                listt.append(mainPartWarpLossSingleBatch(output[i],labels[i]))
-
+            # listt=[]
+            # # for out,lab in zipped:
+            # #     listt.append(mainPartWarpLossSingleBatch(out,lab))
+            # # loss =torch.nanmean(torch.stack(listt))
+            # for i in range(0,6):
+            #     listt.append(mainPartWarpLossSingleBatch(output[i],labels[i]))
+            lossA= mainPartWarpLossSingleBatch(output[0],labels[0])
+            lossB=mainPartWarpLossSingleBatch(output[1],labels[1])
 
             # lossA =mainPartWarpLossSingleBatch(output[0],labels[0])
             # lossB =mainPartWarpLossSingleBatch(output[1],labels[1])
-            loss = torch.nanmean(torch.stack(listt))
+            loss = torch.nanmean(torch.stack([lossA,lossB]))
             print(f"waarp loss  {loss}")
 
             #print(loss.item())
