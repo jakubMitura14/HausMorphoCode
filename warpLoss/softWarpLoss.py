@@ -38,10 +38,10 @@ def prepare_tensors_for_warp_loss(y_true, y_hat,radius,device):
     counts_arr = torch.zeros(num_points_gold_false, dtype=torch.float32, requires_grad=True).to('cuda') 
 
 
-    return (points_in_grid, points_labelArr,  torch.div(y_hat, torch.max(y_hat)), counts_arr
-    ,radius,device,dim_x,dim_y,dim_z,num_points_gold, num_points_gold_false)
-    # return (points_in_grid, points_labelArr,  torch.sigmoid(y_hat), counts_arr
+    # return (points_in_grid, points_labelArr,  torch.div(y_hat, torch.max(y_hat)), counts_arr
     # ,radius,device,dim_x,dim_y,dim_z,num_points_gold, num_points_gold_false)
+    return (points_in_grid, points_labelArr,  torch.sigmoid(y_hat), counts_arr
+    ,radius,device,dim_x,dim_y,dim_z,num_points_gold, num_points_gold_false)
 
 
 
@@ -79,7 +79,7 @@ class getHausdorff_soft(torch.autograd.Function):
                                                                             ctx.counts_arr,
                                                                             ctx.y_hat
                                                                             ,num_points_gold
-                                                                            ,1], device = device)#(dim_x+dim_y+dim_z)/10
+                                                                            ,(dim_x+dim_y+dim_z)/10], device = device)#(dim_x+dim_y+dim_z)/10
 
 
         # return (wp.to_torch(ctx.counts_arr_fp),
